@@ -35,6 +35,8 @@ function renderEvents() {
     li.appendChild(del);
     ul.appendChild(li);
   });
+  // always refresh countdown after rebuilding list
+  updateCountdown();
 }
 
 function showEventForm(show) {
@@ -62,6 +64,8 @@ function addEventFromForm() {
 
   const events = loadEvents();
   events.push({ title, time, location, reminder });
+  // keep persisted list sorted so renderEvents and countdown are simpler
+  events.sort((a, b) => new Date(a.time) - new Date(b.time));
   saveEvents(events);
   renderEvents();
   updateCountdown();
@@ -70,7 +74,9 @@ function addEventFromForm() {
 }
 
 function updateCountdown() {
-  const events = loadEvents().filter(e => new Date(e.time) > new Date());
+  const now = new Date();
+  // include events occurring right now or in the future
+  const events = loadEvents().filter(e => new Date(e.time) >= now);
   if (events.length === 0) {
     document.getElementById("countdown-text").textContent = "--:--";
     document.getElementById("leave-text").textContent = "";
