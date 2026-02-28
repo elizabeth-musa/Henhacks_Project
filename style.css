@@ -57,6 +57,39 @@ button:hover {
   background: #1565c0;
 }
 
+/* new task input */
+#new-task-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* subtasks */
+.subtask-list {
+  list-style: none;
+  padding-left: 1.5rem;
+  margin-top: 0.3rem;
+}
+
+.subtask-container.hidden {
+  display: none;
+}
+
+.subtask-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.expand-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-right: 0.3rem;
+}
+
 #task-list {
   list-style: none;
   padding: 0;
@@ -134,4 +167,112 @@ nav a {
 
 nav a:hover {
   text-decoration: underline;
+}
+
+/* calendar / time page */
+#upcoming-events ul {
+  list-style: none;
+  padding: 0;
+}
+
+#upcoming-events li {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+#countdown-ring-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+}
+
+#countdown-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.2rem;
+}
+
+#leave-text {
+  margin-top: 0.5rem;
+  font-size: 1rem;
+}
+
+#event-form {
+  background: #fff;
+  border: 1px solid #999;
+  padding: 1rem;
+  margin-top: 1rem;
+  max-width: 300px;
+}
+
+#event-form.hidden {
+  display: none;
+}
+
+#event-form label {
+  display: block;
+  margin: 0.5rem 0;
+}
+
+#event-form input[type="text"],
+#event-form input[type="datetime-local"] {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-buttons {
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+#event-controls {
+  margin-bottom: 1rem;
+}
+
+/* tasks overview in calendar page */
+#tasks-overview ul {
+  list-style: none;
+  padding: 0;
+}
+
+.button-link {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  background: #1976d2;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.button-link:hover {
+  background: #1565c0;
+}
+
+/* week grid */
+.week-grid {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.week-cell {
+  flex: 1;
+  background: #e0e0e0;
+  padding: 0.5rem;
+  text-align: center;
+  border-radius: 4px;
+}
+
+#event-controls button {
+  background: #388e3c;
+}
+
+#event-controls button:hover {
+  background: #2e7d32;
 }
