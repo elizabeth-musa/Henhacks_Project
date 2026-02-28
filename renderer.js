@@ -195,19 +195,6 @@ function updateProgress() {
   circle.style.strokeDashoffset = offset;
 }
 
-function promptNewTask() {
-  const text = prompt("Enter task:");
-  if (text) addTask(text);
-}
-
-function promptBrainDump() {
-  const text = prompt("Brain dump:\n(Type whatever comes to mind)");
-  if (text) {
-    // for MVP just add as a normal task with note prefix
-    addTask(`🧠 ${text}`);
-  }
-}
-
 function toggleSensoryMode() {
   const body = document.body;
   body.classList.toggle("sensory-mode");
