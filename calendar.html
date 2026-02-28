@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Calendar</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Calendar</h1>
+      <nav>
+        <a href="index.html">Today</a>
+        <a href="calendar.html">Calendar</a>
+        <a href="brain_dump.html">Brain Dump</a>
+        <a href="history.html">History</a>
+        <a href="settings.html">Settings</a>
+      </nav>
+    </header>
+    <main>
+      <section id="event-controls">
+        <button id="add-event-btn">➕ Add Event</button>
+      </section>
+
+      <section id="week-view">
+        <h2>This Week</h2>
+        <div class="week-grid" id="week-grid"></div>
+      </section>
+
+      <section id="upcoming-events">
+        <h2>Upcoming Events</h2>
+        <ul id="event-list"></ul>
+      </section>
+
+      <section id="next-event-countdown">
+        <h2>Next Event</h2>
+        <div id="countdown-ring-container">
+          <svg id="countdown-ring" width="120" height="120">
+            <circle
+              id="countdown-ring-circle"
+              stroke="#f44336"
+              stroke-width="8"
+              fill="transparent"
+              r="52"
+              cx="60"
+              cy="60"
+            />
+          </svg>
+          <div id="countdown-text">--:--</div>
+        </div>
+        <div id="leave-text"></div>
+      </section>
+
+      <!-- hidden form for creating an event -->
+      <div id="event-form" class="hidden">
+        <h3>New Event</h3>
+        <label>
+          Title:<br />
+          <input type="text" id="event-title-input" />
+        </label>
+        <label>
+          Time:<br />
+          <input type="datetime-local" id="event-time-input" />
+        </label>
+        <label>
+          Location (optional):<br />
+          <input type="text" id="event-location-input" />
+        </label>
+        <label>
+          <input type="checkbox" id="event-reminder-input" /> Reminder
+        </label>
+        <div class="form-buttons">
+          <button id="save-event-btn">Save</button>
+          <button id="cancel-event-btn">Cancel</button>
+        </div>
+      </div>
+    </main>
+
+    <script src="calendar.js"></script>
+  </body>
+</html>
