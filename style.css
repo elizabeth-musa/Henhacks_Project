@@ -234,6 +234,26 @@ nav a:hover {
   margin-bottom: 1rem;
 }
 
+/* tasks overview in calendar page */
+#tasks-overview ul {
+  list-style: none;
+  padding: 0;
+}
+
+.button-link {
+  display: inline-block;
+  padding: 0.4rem 0.8rem;
+  background: #1976d2;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.button-link:hover {
+  background: #1565c0;
+}
+
 /* week grid */
 .week-grid {
   display: flex;
