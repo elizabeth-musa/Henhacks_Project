@@ -1,0 +1,137 @@
+/* Basic layout */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #fafafa;
+  color: #333;
+}
+
+header {
+  background: #1976d2;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+main {
+  flex: 1;
+  display: flex;
+  padding: 1rem;
+  gap: 2rem;
+  align-items: start;
+}
+
+#tasks-section {
+  flex: 2;
+}
+
+#progress-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  border: none;
+  background: #1976d2;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+button:hover {
+  background: #1565c0;
+}
+
+#task-list {
+  list-style: none;
+  padding: 0;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.2rem;
+  border-bottom: 1px solid #ddd;
+}
+
+.task-item .completed {
+  text-decoration: line-through;
+  color: #888;
+}
+
+.delete-btn {
+  background: transparent;
+  color: #e53935;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  color: #ab000d;
+}
+
+#progress-text {
+  margin-top: 0.5rem;
+  font-size: 1.2rem;
+}
+
+/* progress ring base styles */
+#progress-ring-circle {
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  transition: stroke-dashoffset 0.35s;
+}
+
+/* sensory mode */
+body.sensory-mode {
+  background-color: #f3e5f5;
+}
+
+body.sensory-mode header {
+  background: #ab47bc;
+}
+
+body.sensory-mode .task-item {
+  background: rgba(171, 71, 188, 0.1);
+}
+
+body.sensory-mode button {
+  background: #ab47bc;
+}
+
+body.sensory-mode button:hover {
+  background: #9c27b0;
+}
+
+/* navigation */
+nav {
+  margin-top: 0.5rem;
+}
+
+nav a {
+  color: white;
+  margin: 0 0.5rem;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
