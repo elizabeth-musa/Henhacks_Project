@@ -84,7 +84,6 @@ function updateCountdown() {
   }
   events.sort((a, b) => new Date(a.time) - new Date(b.time));
   const next = events[0];
-  const now = new Date();
   const then = new Date(next.time);
   const diffMs = then - now;
   const diffMin = Math.floor(diffMs / 60000);
