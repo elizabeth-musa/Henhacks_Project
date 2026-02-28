@@ -19,6 +19,19 @@ function renderTasks() {
   tasks.forEach((task, idx) => {
     const li = document.createElement("li");
     li.className = "task-item";
+    li.dataset.index = idx;
+
+    // expand button for subtasks
+    const expand = document.createElement("button");
+    expand.className = "expand-btn";
+    expand.textContent = task.subtasks && task.subtasks.length ? "▼" : "▶";
+    expand.addEventListener("click", () => {
+      const sub = li.querySelector(".subtask-container");
+      if (sub) {
+        sub.classList.toggle("hidden");
+        expand.textContent = sub.classList.contains("hidden") ? "▶" : "▼";
+      }
+    });
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -27,6 +40,7 @@ function renderTasks() {
       tasks[idx].completed = checkbox.checked;
       saveTasks(tasks);
       updateProgress();
+      renderTasks(); // re-render to update subtasks
     });
 
     const span = document.createElement("span");
@@ -45,9 +59,73 @@ function renderTasks() {
       updateProgress();
     });
 
+    li.appendChild(expand);
     li.appendChild(checkbox);
     li.appendChild(span);
     li.appendChild(del);
+
+    // container for subtasks and input
+    const container = document.createElement("div");
+    container.className = "subtask-container hidden";
+
+    const subul = document.createElement("ul");
+    subul.className = "subtask-list";
+    if (task.subtasks && task.subtasks.length) {
+      task.subtasks.forEach((st, sidx) => {
+        const sli = document.createElement("li");
+        sli.className = "subtask-item";
+
+        const scheckbox = document.createElement("input");
+        scheckbox.type = "checkbox";
+        scheckbox.checked = st.completed;
+        scheckbox.addEventListener("change", () => {
+          tasks[idx].subtasks[sidx].completed = scheckbox.checked;
+          saveTasks(tasks);
+          updateProgress();
+          renderTasks();
+        });
+
+        const sspan = document.createElement("span");
+        sspan.textContent = st.text;
+        if (st.completed) sspan.classList.add("completed");
+
+        const sdel = document.createElement("button");
+        sdel.textContent = "✕";
+        sdel.className = "delete-btn";
+        sdel.addEventListener("click", () => {
+          tasks[idx].subtasks.splice(sidx, 1);
+          saveTasks(tasks);
+          renderTasks();
+          updateProgress();
+        });
+
+        sli.appendChild(scheckbox);
+        sli.appendChild(sspan);
+        sli.appendChild(sdel);
+        subul.appendChild(sli);
+      });
+    }
+    container.appendChild(subul);
+
+    const subInput = document.createElement("input");
+    subInput.type = "text";
+    subInput.placeholder = "Add subtask...";
+    subInput.addEventListener("keypress", (e) => {
+      if (e.key === "Enter" && subInput.value.trim()) {
+        addSubtask(idx, subInput.value.trim());
+        subInput.value = "";
+      }
+    });
+    container.appendChild(subInput);
+
+    li.appendChild(container);
+
+    // toggle container visibility when expand clicked
+    expand.addEventListener("click", () => {
+      container.classList.toggle("hidden");
+      expand.textContent = container.classList.contains("hidden") ? "▶" : "▼";
+    });
+
     list.appendChild(li);
   });
 }
@@ -55,16 +133,54 @@ function renderTasks() {
 function addTask(text) {
   if (!text) return;
   const tasks = loadTasks();
-  tasks.push({ text, completed: false });
+  tasks.push({ text, completed: false, subtasks: [] });
   saveTasks(tasks);
   renderTasks();
   updateProgress();
 }
 
+function addSubtask(taskIndex, text) {
+  if (!text) return;
+  const tasks = loadTasks();
+  const task = tasks[taskIndex];
+  if (!task.subtasks) task.subtasks = [];
+  task.subtasks.push({ text, completed: false });
+  saveTasks(tasks);
+  renderTasks();
+  updateProgress();
+}
+
+function promptNewTask() {
+  const input = document.getElementById("new-task-input");
+  const text = input.value.trim();
+  if (text) {
+    addTask(text);
+    input.value = "";
+  }
+}
+
+function promptBrainDump() {
+  const text = prompt("Brain dump:\n(Type whatever comes to mind)");
+  if (text) {
+    // for MVP just add as a normal task with note prefix
+    addTask(`🧠 ${text}`);
+  }
+}
+
 function updateProgress() {
   const tasks = loadTasks();
-  const total = tasks.length;
-  const done = tasks.filter((t) => t.completed).length;
+  let total = 0;
+  let done = 0;
+  tasks.forEach((t) => {
+    total += 1;
+    if (t.completed) done += 1;
+    if (t.subtasks) {
+      t.subtasks.forEach((st) => {
+        total += 1;
+        if (st.completed) done += 1;
+      });
+    }
+  });
   const pct = total ? Math.round((done / total) * 100) : 0;
   document.getElementById("progress-text").textContent = `${pct}%`;
   const circle = document.getElementById("progress-ring-circle");
@@ -103,7 +219,11 @@ window.addEventListener("DOMContentLoaded", () => {
   setTodayDate();
   renderTasks();
   updateProgress();
+
   document.getElementById("add-task-btn").addEventListener("click", promptNewTask);
+  document.getElementById("new-task-input").addEventListener("keypress", (e) => {
+    if (e.key === "Enter") promptNewTask();
+  });
   document.getElementById("brain-dump-btn").addEventListener("click", promptBrainDump);
   document.getElementById("sensory-toggle").addEventListener("click", toggleSensoryMode);
 });

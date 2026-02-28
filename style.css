@@ -57,6 +57,39 @@ button:hover {
   background: #1565c0;
 }
 
+/* new task input */
+#new-task-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* subtasks */
+.subtask-list {
+  list-style: none;
+  padding-left: 1.5rem;
+  margin-top: 0.3rem;
+}
+
+.subtask-container.hidden {
+  display: none;
+}
+
+.subtask-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.expand-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-right: 0.3rem;
+}
+
 #task-list {
   list-style: none;
   padding: 0;
