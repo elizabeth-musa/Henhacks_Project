@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>2️⃣ Scribble Log (Scribble Log Inbox) — Yashasri</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;max-width:900px;margin:24px auto;padding:0 16px}
+    h1{font-size:1.25rem;margin-bottom:8px}
+    .box{display:flex;gap:12px;align-items:flex-start}
+    textarea#scribbleInput{width:100%;height:220px;padding:12px;font-size:1rem;border:1px solid #ccc;border-radius:8px;resize:vertical}
+    button{background:#0078d4;color:#fff;border:none;padding:8px 12px;border-radius:6px;cursor:pointer}
+    button.secondary{background:#666}
+    .scribble{border:1px solid #e5e7eb;padding:12px;border-radius:8px;margin-bottom:10px;background:#fff}
+    .meta{font-size:0.85rem;color:#666;margin-bottom:8px}
+    .actions button{margin-right:8px}
+    .list{margin-top:18px}
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="today-date">Loading...</h1>
+    <nav>
+      <a href="index.html">Today</a>
+      <a href="scribble_log.html">Scribble Log</a>
+      <a href="history.html">History</a>
+      <a href="settings.html">Settings</a>
+    </nav>
+    <button id="sensory-toggle" title="Toggle sensory mode">🎨</button>
+  </header>
+
+  <h1>2️⃣ Scribble Log (Scribble Log Inbox)</h1>
+  <p>Purpose: Frictionless mental unload. Capture first. Organize later.</p>
+
+  <div class="box">
+    <textarea id="scribbleInput" placeholder="Scribble anything — quick thoughts, worries, ideas..."></textarea>
+  </div>
+  <div style="margin-top:8px">
+    <button id="saveBtn">Save</button>
+    <button id="clearBtn" class="secondary">Clear</button>
+  </div>
+
+  <section class="list">
+    <h2>Saved Scribbles</h2>
+    <div id="scribbleList"></div>
+  </section>
+
+  <script>
+    // populate header date
+    function setTodayDate(){
+      const today = new Date();
+      const options = { weekday: 'long', month: 'long', day: 'numeric' };
+      const el = document.getElementById('today-date');
+      if(el) el.textContent = today.toLocaleDateString(undefined, options);
+    }
+    setTodayDate();
+
+    // LocalStorage keys
+    const S_KEY = 'scribbles';
+    const T_KEY = 'daily_tasks'; // Daily Log storage (match renderer.js)
+
+    function loadScribbles(){
+      try{ return JSON.parse(localStorage.getItem(S_KEY) || '[]') }catch(e){ return [] }
+    }
+    function saveScribbles(arr){ localStorage.setItem(S_KEY, JSON.stringify(arr)) }
+
+    function loadTasks(){
+      try{ return JSON.parse(localStorage.getItem(T_KEY) || '[]') }catch(e){ return [] }
+    }
+    function saveTasks(arr){ localStorage.setItem(T_KEY, JSON.stringify(arr)) }
+
+    const input = document.getElementById('scribbleInput');
+    const saveBtn = document.getElementById('saveBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const list = document.getElementById('scribbleList');
+
+    function render(){
+      const scribbles = loadScribbles();
+      list.innerHTML = '';
+      if(!scribbles.length){ list.innerHTML = '<p>No scribbles yet — unload something.</p>'; return }
+
+      scribbles.slice().reverse().forEach(s => {
+        const el = document.createElement('div'); el.className='scribble';
+        const meta = document.createElement('div'); meta.className='meta';
+        const date = new Date(s.createdAt || s.id);
+        meta.textContent = date.toLocaleString();
+        const content = document.createElement('div'); content.className='content';
+        content.textContent = s.text;
+
+        const actions = document.createElement('div'); actions.className='actions';
+        const edit = document.createElement('button'); edit.textContent='Edit'; edit.className='secondary';
+        const del = document.createElement('button'); del.textContent='Delete'; del.className='secondary';
+        const conv = document.createElement('button'); conv.textContent='Convert to Task';
+
+        edit.onclick = ()=> startEdit(s.id, content, el);
+        del.onclick = ()=> deleteScribble(s.id);
+        conv.onclick = ()=> convertToTask(s.id);
+
+        actions.appendChild(conv); actions.appendChild(edit); actions.appendChild(del);
+        el.appendChild(meta); el.appendChild(content); el.appendChild(actions);
+        list.appendChild(el);
+      })
+    }
+
+    function addScribble(text){
+      if(!text || !text.trim()) return;
+      const arr = loadScribbles();
+      const item = { id: Date.now(), text: text.trim(), createdAt: new Date().toISOString() };
+      arr.push(item);
+      saveScribbles(arr);
+      render();
+      input.value='';
+    }
+
+    function deleteScribble(id){
+      if(!confirm('Delete this scribble?')) return;
+      const arr = loadScribbles().filter(s=>s.id!==id);
+      saveScribbles(arr);
+      render();
+    }
+
+    function startEdit(id, contentEl, containerEl){
+      const scribbles = loadScribbles();
+      const s = scribbles.find(x=>x.id===id); if(!s) return;
+      const ta = document.createElement('textarea'); ta.style.width='100%'; ta.value = s.text;
+      const save = document.createElement('button'); save.textContent='Save';
+      const cancel = document.createElement('button'); cancel.textContent='Cancel'; cancel.className='secondary';
+      const footer = document.createElement('div'); footer.style.marginTop='8px'; footer.appendChild(save); footer.appendChild(cancel);
+
+      // replace content
+      containerEl.replaceChild(ta, contentEl);
+      containerEl.appendChild(footer);
+
+      save.onclick = ()=>{
+        s.text = ta.value; s.editedAt = new Date().toISOString();
+        saveScribbles(scribbles);
+        render();
+      }
+      cancel.onclick = ()=> render();
+    }
+
+    function convertToTask(id){
+      const scribbles = loadScribbles();
+      const idx = scribbles.findIndex(s=>s.id===id); if(idx===-1) return;
+      const s = scribbles[idx];
+      // create a task object and push to dailyTasks
+      const tasks = loadTasks();
+      const task = { id: Date.now(), text: s.text, fromScribbleId: s.id, createdAt: new Date().toISOString(), completed: false };
+      tasks.push(task); saveTasks(tasks);
+      // remove scribble
+      scribbles.splice(idx,1); saveScribbles(scribbles);
+      render();
+      alert('Converted to Daily Log.');
+    }
+
+    saveBtn.addEventListener('click', ()=> addScribble(input.value));
+    clearBtn.addEventListener('click', ()=> input.value='');
+
+    // keyboard shortcut: Cmd/Ctrl+Enter to save
+    input.addEventListener('keydown', (e)=>{
+      if((e.ctrlKey || e.metaKey) && e.key === 'Enter'){
+        addScribble(input.value);
+      }
+    })
+
+    // initial render
+    render();
+
+    // sensory mode toggle (header button)
+    document.getElementById('sensory-toggle')?.addEventListener('click', () => {
+      document.body.classList.toggle('sensory-mode');
+    });
+  </script>
+</body>
+</html>
