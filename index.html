@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bullet Journal MVP</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <h1 id="today-date">Loading...</h1>
+      <nav>
+        <a href="index.html">Today</a>
+        <a href="scribble_log.html">Brain Dump</a>
+        <a href="history.html">History</a>
+        <a href="settings.html">Settings</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="tasks-section">
+        <div class="controls">
+          <button id="add-task-btn">➕ Add task</button>
+          <button id="brain-dump-btn">🧠 Brain dump</button>
+          <button id="sensory-toggle" title="Toggle sensory mode">🎨</button>
+        </div>
+
+        <ul id="task-list"></ul>
+      </section>
+
+      <section id="progress-section">
+        <svg id="progress-ring" width="120" height="120">
+          <circle
+            id="progress-ring-circle"
+            stroke="#4caf50"
+            stroke-width="8"
+            fill="transparent"
+            r="52"
+            cx="60"
+            cy="60"
+          />
+        </svg>
+        <div id="progress-text">0%</div>
+      </section>
+    </main>
+
+    <script src="renderer.js"></script>
+    <script>
+      // Map the Brain Dump control button to the Scribble Log page
+      document.getElementById('brain-dump-btn')?.addEventListener('click', () => {
+        window.location.href = 'scribble_log.html';
+      });
+    </script>
+  </body>
+</html>
