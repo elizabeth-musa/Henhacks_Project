@@ -163,13 +163,6 @@ function promptNewTask() {
   }
 }
 
-function promptBrainDump() {
-  const text = prompt("Brain dump:\n(Type whatever comes to mind)");
-  if (text) {
-    // for MVP just add as a normal task with note prefix
-    addTask(`🧠 ${text}`);
-  }
-}
 
 function updateProgress() {
   const tasks = loadTasks();
@@ -217,8 +210,6 @@ window.addEventListener("DOMContentLoaded", () => {
   if (input) input.addEventListener("keypress", (e) => {
     if (e.key === "Enter") promptNewTask();
   });
-  const brainBtn = document.getElementById("brain-dump-btn");
-  if (brainBtn) brainBtn.addEventListener("click", promptBrainDump);
   const sensBtn = document.getElementById("sensory-toggle");
   if (sensBtn) sensBtn.addEventListener("click", toggleSensoryMode);
 });
